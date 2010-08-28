@@ -8,7 +8,7 @@ var handler = staticResource.createHandler(fs.realpathSync('./static'));
 var server = http.createServer(function(request, response) {
     var path = url.parse(request.url).pathname;
     if(path == '/') {
-        path = '/index.html';
+        path = '/coming.html';
     }
     
     if(!handler.handle(path, request, response)) {
@@ -17,4 +17,4 @@ var server = http.createServer(function(request, response) {
         response.end();
     }
 });
-server.listen(80);
+server.listen(8080);
