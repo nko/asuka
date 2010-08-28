@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var sys = require('sys');
 
 var staticResource = require('./libraries/static-resource');
 //var mustache = require('./libraries/mustache');
@@ -14,18 +15,21 @@ var server = http.createServer(function(request, response) {
         path = '/coming.html';
     }
 
-    /*
-    if(mustachedPages[path]) {
-        
-    } else {
-    */
+    switch(path) {
+      case '/upload':
+        handleUpload(request, response);
+        break;
+      default:
         if(!handler.handle(path, request, response)) {
             response.writeHead(404);
             response.write('404');
             response.end();
         }
-    /*
+        break;
     }
-    */
 });
-server.listen(80);
+server.listen(8080);
+
+function handleUpload(request, response) {
+    sys.debug('handleUpload called');
+}
