@@ -3,7 +3,7 @@ var fs = require('fs');
 var url = require('url');
 
 var staticResource = require('./libraries/static-resource');
-var mustache = require('./libraries/mustache');
+//var mustache = require('./libraries/mustache');
 
 var handler = staticResource.createHandler(fs.realpathSync('./static'));
 //var mustachedPages = new Array('/index.html');
