@@ -7,6 +7,10 @@ var handler = staticResource.createHandler(fs.realpathSync('./static'));
 
 var server = http.createServer(function(request, response) {
     var path = url.parse(request.url).pathname;
+    if(path == '/') {
+        path = '/index.html';
+    }
+    
     if(!handler.handle(path, request, response)) {
         response.writeHead(404);
         response.write('404');
