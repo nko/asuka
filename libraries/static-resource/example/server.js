@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
-var staticResource = require('./libraries/static-resource');
+var staticResource = require('../');
 
 var handler = staticResource.createHandler(fs.realpathSync('./static'));
 
@@ -13,4 +13,4 @@ var server = http.createServer(function(request, response) {
         response.end();
     }
 });
-server.listen(80);
+server.listen(8080);
