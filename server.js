@@ -81,6 +81,7 @@ function handleUpload(request, response) {
 */
 
 function handleUpload(request, response) {
+    //request.setEncoding('utf8');
     /*
     var form = new formidable.IncomingForm();
     form.uploadDir = fs.realpathSync('./files');
@@ -98,13 +99,22 @@ function handleUpload(request, response) {
     });
     form.parse(request);
     */
-    sys.debug('called!');
-    sys.debug('version: '+request.httpVersion);
-    sys.debug(request.headers);
+    //sys.debug('called!');
+    //sys.debug('version: '+request.httpVersion);
+    //sys.debug(sys.inspect(request.headers));
 
-    var base64data = '';
+    var base64data = new Buffer(0);
+    //var base64data = '';
     request.addListener('data', function(chunk) {
-        base64data += chunk.toString('base64');
+        //sys.debug(sys.inspect(chunk));
+        //sys.debug('chunk length: '+chunk.length);
+        //sys.debug('new length: '+(base64data.length+chunk.length));
+        var newBuffer = new Buffer(base64data.length+chunk.length);
+        base64data.copy(newBuffer, 0, 0);
+        chunk.copy(newBuffer, base64data.length, 0);
+        base64data = newBuffer;
+        
+        //base64data += chunk.toString('base64');
         /*
         //sys.debug('data: '+chunk.toString('base64'));
         //sys.debug(listener.clients.length);
@@ -119,12 +129,30 @@ function handleUpload(request, response) {
         */
     });
     request.addListener('end', function() {
-        //sys.debug('image:'+base64data);
+        /*
+        var newData = '';
+        var startIndex = 0;
+        var endIndex = 0;
+        while(startIndex < base64data.length) {
+            if(newData != '') {
+                newData += '\n';
+            }
+            endIndex += 76;
+            if(endIndex > base64data.length) {
+                endIndex = base64data.length;
+            }
+            newData += base64data.substring(startIndex, endIndex);
+            startIndex = endIndex;
+        }
+        */
+
+        var newData = base64data.toString('base64')/*base64data.toString('base64')*/;
+        //sys.debug('image:'+newData);
         for(var index = 0; index < listener.clients.length; index++) {
             var client = listener.clients[index];
             //sys.debug(sys.inspect(client));
             if(client != null) {
-                client.send('data:image/jpeg;base64,'+base64data);
+                client.send('data:image/png;base64,'+newData);
             }
         }
         
