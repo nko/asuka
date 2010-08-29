@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Asuka</title>
+    <!--<link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">-->
+    <script type="text/javascript" src="/javascript/config.js"></script>
+    <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script>
+    <!--<script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>-->
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script>
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script>
+
+    <script type="text/javascript" src="/libraries/socketio/socket.io.js"></script>
+
+    <script type="text/javascript" src="/libraries/layoutmanager/jquery.layoutengine.min.js"></script>
+
+    <style type="text/css">
+      div#FileDragDrop {
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+      }
+
+      div#CenterContent {
+        background-color: #eeeeee;
+      }
+
+      div#BottomContent {
+        background-color: #888888;
+      }
+
+      div#FileViewMain {
+        float: left;
+        margin-left: auto auto;
+        border: 1px solid #000000;
+        width: 200px;
+        height: 200px;
+      }
+
+      div#FileView1 {
+        float: left;
+        margin-left: 0px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+      }
+
+      div#FileView2 {
+        float: left;
+        margin-left: 100px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+      }
+    </style>
+    <script>
+      /*
+      $(document).ready(function() {
+        var uploader = new qq.FileUploader({
+          element: document.getElementById('FileDragDrop'),
+          action: '/upload',
+          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+          //sizeLimit: 0,
+          onSubmit: function(id, fileName) {
+            alert(fileName+' is uploading!');
+          },
+          onComplete: function(id, fileName, responseJSON) {
+            alert('done!');
+          }
+        });
+      });
+      */
+      $(document).ready(function() {
+        setUpFileUpload();
+        setUpWebsockets();
+        setUpLayout();
+      });
+
+      function setUpFileUpload() {
+        $('#FileDragDrop').dropzone({
+          url: 'http://'+PictShareHostPort+'/upload'
+        });
+      }
+
+      function setUpWebsockets() {
+        io.setPath('/websockets/');
+      
+        var socket = new io.Socket(PictShareHost, {port: PictSharePort});
+        socket.connect();
+        socket.send('some data');
+        socket.on('message', function(data) {
+          //alert(data);
+          $('#FileView').append('<img src="'+data+'" />');
+        });
+      }
+
+      function setUpLayout() {
+        var layoutSettings = {
+          Name: 'Main',
+          Dock: $.layoutEngine.DOCK.FILL,
+          EleID: 'MainContainer',
+          Children: [
+            {
+              Name: 'Top',
+              Dock: $.layoutEngine.DOCK.TOP,
+              EleID: 'TopContent',
+              Height: 156
+            },
+            {
+              Name: 'Center',
+              Dock: $.layoutEngine.DOCK.FILL,
+              EleID: 'CenterContent',
+            },
+            {
+              Name: 'Bottom',
+              Dock: $.layoutEngine.DOCK.BOTTOM,
+              EleID: 'BottomContent',
+              Height: 125
+            },
+          ]
+        };
+        $.layoutEngine(layoutSettings);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="FileDragDrop">
+      <div id="MainContainer">
+        <div id="TopContent">
+          <img src="/images/pictshare_small.png" />
+        </div>
+        <div id="CenterContent">
+          <div id="FileViewMain"></div>
+        </div>
+        <div id="BottomContent">
+          <div id="FileView1"></div>
+          <div id="FileView2"></div>
+          <div id="FileView3"></div>
+          <div id="FileView4"></div>
+          <div id="FileView5"></div>
+        </div>
+      </div>
+    </div>
+    <!--
+    <h1>Nanka</h1>
+    <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;">
+      Drop File Here!
+    </div>
+    <div id="FileView" style="width: 200px; height: 200px; border: thin solid black;">
+      See files here!
+    </div>
+    <div>
+      <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a>
+    </div>
+    -->
+  </body>
+</html>

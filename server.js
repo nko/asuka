@@ -1,3 +1,5 @@
+var PictSharePort = 8080;
+
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
@@ -31,7 +33,7 @@ var server = http.createServer(function(request, response) {
         break;
     }
 });
-server.listen(80);
+server.listen(PictSharePort);
 
 var listener = io.listen(server);
 listener.on('connection', function(client) {
