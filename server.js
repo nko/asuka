@@ -2,11 +2,12 @@ var http = require('http');
 var fs = require('fs');
 var url = require('url');
 var sys = require('sys');
+var path = require('path');
 
-//var multipart = require('./libraries/multipart/lib/multipart');
-var formidable = require('formidable');
+//var formidable = require('./libraries/formidable');
 var staticResource = require('./libraries/static-resource');
 //var mustache = require('./libraries/mustache');
+var io = require('./libraries/socketio')
 
 var handler = staticResource.createHandler(fs.realpathSync('./static'));
 //var mustachedPages = new Array('/index.html');
@@ -31,8 +32,18 @@ var server = http.createServer(function(request, response) {
     }
 });
 server.listen(8080);
+
+var listener = io.listen(server);
+listener.on('connection', function(client) {
+    sys.debug('client connected: '+client.sessionId);
+    client.on('disconnect', function() {
+        sys.debug('client disconnected: '+client.sessionId);
+    });
+});
+
 sys.debug('server is running!');
 
+/*
 function parseMultipart(request) {
     var parser = multipart.parser();
     parser.headers = request.headers;
@@ -62,8 +73,62 @@ function handleUpload(request, response) {
     stream.onEnd = function() {
         sys.debug('onEnd');
         
-        response.writeHead(200, {'Content-Type': 'application/json'});
+       response.writeHead(200, {'Content-Type': 'application/json'});
         response.write('{success: true}');
         response.end();
     };
 }
+*/
+
+function handleUpload(request, response) {
+    /*
+    var form = new formidable.IncomingForm();
+    form.uploadDir = fs.realpathSync('./files');
+    
+    form.addListener('field', function(field, value) {
+        sys.debug('field');
+    });
+    form.addListener('file', function(field, file) {
+        sys.debug('file');
+    });
+    form.addListener('end', function() {
+        sys.debug('end');
+        response.writeHead(200, {'content-type': 'text/plain'});
+        response.end('thanks!\n\n');
+    });
+    form.parse(request);
+    */
+    sys.debug('called!');
+    sys.debug('version: '+request.httpVersion);
+    sys.debug(request.headers);
+
+    var base64data = '';
+    request.addListener('data', function(chunk) {
+        base64data += chunk.toString('base64');
+        /*
+        //sys.debug('data: '+chunk.toString('base64'));
+        //sys.debug(listener.clients.length);
+        //sys.debug(sys.inspect(listener.clients));
+        for(var index = 0; index < listener.clients.length; index++) {
+            var client = listener.clients[index];
+            //sys.debug(sys.inspect(client));
+            if(client != null) {
+                client.send(chunk);
+            }
+        }
+        */
+    });
+    request.addListener('end', function() {
+        //sys.debug('image:'+base64data);
+        for(var index = 0; index < listener.clients.length; index++) {
+            var client = listener.clients[index];
+            //sys.debug(sys.inspect(client));
+            if(client != null) {
+                client.send('data:image/jpeg;base64,'+base64data);
+            }
+        }
+        
+        response.writeHead(200, {'content-type': 'text/plain'});
+        response.end(base64data+'\n\n');
+    });
+};

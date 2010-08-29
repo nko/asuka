@@ -3,10 +3,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Asuka</title>
-    <link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">
+    <!--<link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">-->
     <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>
+    <!--<script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>-->
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script>
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script>
+
+    <script type="text/javascript" src="/libraries/socketio/socket.io.js"></script>
+    
     <script>
+      /*
       $(document).ready(function() {
         var uploader = new qq.FileUploader({
           element: document.getElementById('FileDragDrop'),
@@ -21,11 +27,35 @@
           }
         });
       });
+      */
+      $(document).ready(function() {
+        setUpFileUpload();
+        setUpWebsockets();
+      });
+
+      function setUpFileUpload() {
+        $('#FileDragDrop').dropzone({
+          url: 'http://localhost:8080/upload'
+        });
+      };
+
+      function setUpWebsockets() {
+        io.setPath('/websockets/');
+      
+        var socket = new io.Socket('localhost', {port: 8080});
+        socket.connect();
+        socket.send('some data');
+        socket.on('message', function(data) {
+          alert(data);
+          $('#FileView').append('<img src="'+data+'" />');
+        });
+      };
     </script>
   </head>
   <body>
     <h1>Nanka</h1>
-    <div id="FileDragDrop">
+    <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;">
+      Drop File Here!
     </div>
     <div id="FileView" style="width: 200px; height: 200px; border: thin solid black;">
       See files here!
