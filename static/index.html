@@ -106,13 +106,16 @@
       var fileViewSizeSmall = 100;
       
       $(document).ready(function() {
+        checkBrowser();
         setUpFileUpload();
         setUpWebsockets();
       
         showDialog();
         setUpLayout();
 
-        checkBrowser();
+        $(window).resize(function() {
+          setUpLayout();
+        });
       });
 
       function setUpFileUpload() {
