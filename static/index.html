@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Asuka</title>
+    <title>PICTSHARE - by Asuka</title>
     <!--<link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">-->
     <script type="text/javascript" src="/javascript/config.js"></script>
     <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script>
@@ -114,7 +114,8 @@
 
       function setUpFileUpload() {
         $('#FileDragDrop').dropzone({
-          url: 'http://'+PictShareHostPort+'/upload'
+          url: 'http://'+PictShareHostPort+'/upload',
+          numConcurrentUploads: 1
         });
       }
 
