@@ -4,55 +4,221 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Asuka</title>
     <!--<link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">-->
+    <script type="text/javascript" src="/javascript/config.js"></script>
     <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script>
     <!--<script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>-->
     <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script>
     <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script>
-
     <script type="text/javascript" src="/libraries/socketio/socket.io.js"></script>
+    <script type="text/javascript" src="/libraries/layoutmanager/jquery.layoutengine.min.js"></script>
+    <script type="text/javascript" src="/libraries/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+
+    <link rel="stylesheet" href="/libraries/fancybox/jquery.fancybox-1.3.1.css" type="text/css" media="screen" />
     
+    <style type="text/css">
+      body{
+        margin: 0;
+        padding: 0
+      }
+
+      div#FileDragDrop {
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+      }
+
+      div#CenterContent {
+        /*background-color: #eeeeee;*/
+      }
+
+      div#BottomContent {
+        /*background-color: #888888;*/
+      }
+
+      div#MainFileViewContainer {
+      }
+
+      div#SmallFileViewContainer {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        width: 550px;
+      }
+
+      div#FileViewMain {
+        margin-left: auto;
+        margin-right: auto;
+        width: 380px;
+        height: 380px;
+        border: 1px solid #000000;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView1 {
+        float: left;
+        margin-left: 0px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView2 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView3 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView4 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView5 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+    </style>
     <script>
-      /*
-      $(document).ready(function() {
-        var uploader = new qq.FileUploader({
-          element: document.getElementById('FileDragDrop'),
-          action: '/upload',
-          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-          //sizeLimit: 0,
-          onSubmit: function(id, fileName) {
-            alert(fileName+' is uploading!');
-          },
-          onComplete: function(id, fileName, responseJSON) {
-            alert('done!');
-          }
-        });
-      });
-      */
+      var fileViewIndex = 0;
+      var fileViewSizeMain = 380;
+      var fileViewSizeSmall = 100;
+      
       $(document).ready(function() {
         setUpFileUpload();
         setUpWebsockets();
+        setUpLayout();
+      
+        showDialog();
       });
 
       function setUpFileUpload() {
         $('#FileDragDrop').dropzone({
-          url: 'http://asuka.no.de/upload'
+          url: 'http://'+PictShareHostPort+'/upload'
         });
-      };
+      }
 
       function setUpWebsockets() {
         io.setPath('/websockets/');
       
-        var socket = new io.Socket('asuka.no.de', {port: 80});
+        var socket = new io.Socket(PictShareHost, {port: PictSharePort});
         socket.connect();
-        socket.send('some data');
         socket.on('message', function(data) {
-          //alert(data);
-          $('#FileView').append('<img src="'+data+'" />');
+          var response = jQuery.parseJSON(data);
+          if(response.type == 'image') {
+            if(fileViewIndex > 5) {
+              fileViewIndex = 1;
+            }
+            if((fileViewIndex >= 1) && (fileViewIndex <= 5)) {
+              var mainData = $('#FileViewMain-Image').attr('src');
+              $('#FileView'+fileViewIndex).empty();
+              $('#FileView'+fileViewIndex).append('<a id="FileView'+fileViewIndex+'-Fancy" href="#FileView'+fileViewIndex+'-Image-Original"><img width="'+fileViewSizeSmall+'" height="'+fileViewSizeSmall+'" src="'+mainData+'" /></a>');
+              $('#FileView'+fileViewIndex).append('<div style="display:none;"><img id="FileView'+fileViewIndex+'-Image-Original" src="'+mainData+'" /></div>');
+              $('#FileView'+fileViewIndex+'-Fancy').fancybox();
+            }
+            $('#FileViewMain').empty();
+            $('#FileViewMain').append('<a id="FileViewMain-Fancy" href="#FileViewMain-Image-Original"><img id="FileViewMain-Image" width="'+fileViewSizeMain+'" height="'+fileViewSizeMain+'" src="'+response.content+'" /></a>');
+            $('#FileViewMain').append('<div style="display:none;"><img id="FileViewMain-Image-Original" src="'+response.content+'" /></div>');
+            $('#FileViewMain-Fancy').fancybox();
+            fileViewIndex += 1;
+          } else if(response.type == 'users') {
+            //alert('users: '+response.content);
+            $('#NumberOfClients').html('online users: '+response.content);
+          }
         });
-      };
+      }
+
+      function setUpLayout() {
+        var layoutSettings = {
+          Name: 'Main',
+          Dock: $.layoutEngine.DOCK.FILL,
+          EleID: 'MainContainer',
+          Children: [
+            {
+              Name: 'Top',
+              Dock: $.layoutEngine.DOCK.TOP,
+              EleID: 'TopContent',
+              Height: 156
+            },
+            {
+              Name: 'Center',
+              Dock: $.layoutEngine.DOCK.FILL,
+              EleID: 'CenterContent',
+            },
+            {
+              Name: 'Bottom',
+              Dock: $.layoutEngine.DOCK.BOTTOM,
+              EleID: 'BottomContent',
+              Height: 125
+            },
+          ]
+        };
+        $.layoutEngine(layoutSettings);
+      }
+
+      function showDialog() {
+        $('#HowToDialog').slideDown('slow');
+        $('#HowToDialog').click(function() {
+          $('#HowToDialog').hide();
+        });
+      }
     </script>
   </head>
   <body>
+    <div id="FileDragDrop">
+      <div id="MainContainer">
+        <div id="TopContent">
+          <div>
+            <img src="/images/pictshare_small.png" />
+          </div>
+          <div>
+            <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a>
+          </div>
+          <div id="HowToDialog" style="display: none; position: fixed; top: 0px;  width: 100%; height: 50px; background-color: #e8e8e8; text-align: center; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; -moz-border-radius-bottomleft: 10px; -moz-border-radius-topright: 10px; font-weight: bold; -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50; font-size: 120%;">
+            Drag and drop image file to anywhere on this page!
+          </div>
+        </div>
+        <div id="CenterContent">
+          <div id="MainFileViewContainer">
+            <div id="FileViewMain"></div>
+          </div>
+        </div>
+        <div id="BottomContent">
+          <div id="SmallFileViewContainer">
+            <div id="FileView1"></div>
+            <div id="FileView2"></div>
+            <div id="FileView3"></div>
+            <div id="FileView4"></div>
+            <div id="FileView5"></div>
+          </div>
+          <div style="position: fixed; bottom: 0px; right: 0px; width: 150px; height: 30px; background-color: #000000; text-align: center; color: #ffffff; border-top-left-radius: 10px;-moz-border-radius-topleft: 10px;">
+            <div id="NumberOfClients" style="padding: 5px;"></div>
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
     <h1>Nanka</h1>
     <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;">
       Drop File Here!
@@ -63,5 +229,6 @@
     <div>
       <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a>
     </div>
+    -->
   </body>
 </html>

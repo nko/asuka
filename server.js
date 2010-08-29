@@ -17,7 +17,7 @@ var handler = staticResource.createHandler(fs.realpathSync('./static'));
 var server = http.createServer(function(request, response) {
     var path = url.parse(request.url).pathname;
     if(path == '/') {
-        path = '/coming.html';
+        path = '/index.html';
     }
 
     switch(path) {
@@ -35,15 +35,16 @@ var server = http.createServer(function(request, response) {
 });
 server.listen(PictSharePort);
 
+var numberOfClients = 0;
 var listener = io.listen(server);
 listener.on('connection', function(client) {
-    sys.debug('client connected: '+client.sessionId);
+    sendNumberOfClients(1);
     client.on('disconnect', function() {
-        sys.debug('client disconnected: '+client.sessionId);
+        sendNumberOfClients(-1);
     });
 });
 
-sys.debug('server is running!');
+sys.debug('pistshare is rocking!');
 
 /*
 function parseMultipart(request) {
@@ -150,6 +151,7 @@ function handleUpload(request, response) {
 
         var newData = base64data.toString('base64')/*base64data.toString('base64')*/;
         //sys.debug('image:'+newData);
+        /*
         for(var index = 0; index < listener.clients.length; index++) {
             var client = listener.clients[index];
             //sys.debug(sys.inspect(client));
@@ -157,8 +159,15 @@ function handleUpload(request, response) {
                 client.send('{"type":"image", "content":"data:image/png;base64,'+newData+'"}');
             }
         }
+        */
+        listener.broadcast('{"type":"image", "content":"data:image/png;base64,'+newData+'"}');
         
         response.writeHead(200, {'content-type': 'text/plain'});
         response.end(base64data+'\n\n');
     });
-};
+}
+
+function sendNumberOfClients(change) {
+    numberOfClients += change;
+    listener.broadcast('{"type":"users", "content":"'+numberOfClients+'"}');
+}
