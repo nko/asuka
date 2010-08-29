@@ -1,4 +1,4 @@
-var PictSharePort = 8080;
+var PictSharePort = 80;
 
 var http = require('http');
 var fs = require('fs');
@@ -103,7 +103,7 @@ function handleUpload(request, response) {
     */
     //sys.debug('called!');
     //sys.debug('version: '+request.httpVersion);
-    //sys.debug(sys.inspect(request.headers));
+    sys.debug(sys.inspect(request.headers));
 
     var base64data = new Buffer(0);
     //var base64data = '';
@@ -154,7 +154,7 @@ function handleUpload(request, response) {
             var client = listener.clients[index];
             //sys.debug(sys.inspect(client));
             if(client != null) {
-                client.send('data:image/png;base64,'+newData);
+                client.send('{"type":"image", "content":"data:image/png;base64,'+newData+'"}');
             }
         }
         

@@ -9,11 +9,12 @@
     <!--<script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>-->
     <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script>
     <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script>
-
     <script type="text/javascript" src="/libraries/socketio/socket.io.js"></script>
-
     <script type="text/javascript" src="/libraries/layoutmanager/jquery.layoutengine.min.js"></script>
+    <script type="text/javascript" src="/libraries/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 
+    <link rel="stylesheet" href="/libraries/fancybox/jquery.fancybox-1.3.1.css" type="text/css" media="screen" />
+    
     <style type="text/css">
       div#FileDragDrop {
         width: 100%;
@@ -22,19 +23,30 @@
       }
 
       div#CenterContent {
-        background-color: #eeeeee;
+        /*background-color: #eeeeee;*/
       }
 
       div#BottomContent {
-        background-color: #888888;
+        /*background-color: #888888;*/
+      }
+
+      div#MainFileViewContainer {
+      }
+
+      div#SmallFileViewContainer {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        width: 550px;
       }
 
       div#FileViewMain {
-        float: left;
-        margin-left: auto auto;
+        margin-left: auto;
+        margin-right: auto;
+        width: 380px;
+        height: 380px;
         border: 1px solid #000000;
-        width: 200px;
-        height: 200px;
+        background-color: #fcfcfc;
       }
 
       div#FileView1 {
@@ -43,37 +55,56 @@
         border: 1px solid #000000;
         width: 100px;
         height: 100px;
+        background-color: #fcfcfc;
       }
 
       div#FileView2 {
         float: left;
-        margin-left: 100px;
+        margin-left: 10px;
         border: 1px solid #000000;
         width: 100px;
         height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView3 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView4 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
+      }
+
+      div#FileView5 {
+        float: left;
+        margin-left: 10px;
+        border: 1px solid #000000;
+        width: 100px;
+        height: 100px;
+        background-color: #fcfcfc;
       }
     </style>
     <script>
-      /*
-      $(document).ready(function() {
-        var uploader = new qq.FileUploader({
-          element: document.getElementById('FileDragDrop'),
-          action: '/upload',
-          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-          //sizeLimit: 0,
-          onSubmit: function(id, fileName) {
-            alert(fileName+' is uploading!');
-          },
-          onComplete: function(id, fileName, responseJSON) {
-            alert('done!');
-          }
-        });
-      });
-      */
+      var fileViewIndex = 0;
+      var fileViewSizeMain = 380;
+      var fileViewSizeSmall = 100;
+      
       $(document).ready(function() {
         setUpFileUpload();
         setUpWebsockets();
         setUpLayout();
+
+        //$('#FileViewMain-Image').fancybox();
       });
 
       function setUpFileUpload() {
@@ -87,10 +118,26 @@
       
         var socket = new io.Socket(PictShareHost, {port: PictSharePort});
         socket.connect();
-        socket.send('some data');
         socket.on('message', function(data) {
-          //alert(data);
-          $('#FileView').append('<img src="'+data+'" />');
+          var response = jQuery.parseJSON(data);
+          if(response.type == 'image') {
+            if(fileViewIndex > 5) {
+              fileViewIndex = 1;
+            }
+            if((fileViewIndex >= 1) && (fileViewIndex <= 5)) {
+              var mainData = $('#FileViewMain-Image').attr('src');
+              $('#FileView'+fileViewIndex).empty();
+              $('#FileView'+fileViewIndex).append('<a id="FileView'+fileViewIndex+'-Fancy" href="#FileView'+fileViewIndex+'-Image-Original"><img width="'+fileViewSizeSmall+'" height="'+fileViewSizeSmall+'" src="'+mainData+'" /></a>');
+              $('#FileView'+fileViewIndex).append('<div style="display:none;"><img id="FileView'+fileViewIndex+'-Image-Original" src="'+mainData+'" /></div>');
+              $('#FileView'+fileViewIndex+'-Fancy').fancybox();
+            }
+            $('#FileViewMain').empty();
+            $('#FileViewMain').append('<a id="FileViewMain-Fancy" href="#FileViewMain-Image-Original"><img id="FileViewMain-Image" width="'+fileViewSizeMain+'" height="'+fileViewSizeMain+'" src="'+response.content+'" /></a>');
+            $('#FileViewMain').append('<div style="display:none;"><img id="FileViewMain-Image-Original" src="'+response.content+'" /></div>');
+            $('#FileViewMain-Fancy').fancybox();
+            fileViewIndex += 1;
+          } else if(response.type == 'users') {
+          }
         });
       }
 
@@ -127,17 +174,26 @@
     <div id="FileDragDrop">
       <div id="MainContainer">
         <div id="TopContent">
-          <img src="/images/pictshare_small.png" />
+          <div>
+            <img src="/images/pictshare_small.png" />
+          </div>
+          <div>
+            <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a>
+          </div>
         </div>
         <div id="CenterContent">
-          <div id="FileViewMain"></div>
+          <div id="MainFileViewContainer">
+            <div id="FileViewMain"></div>
+          </div>
         </div>
         <div id="BottomContent">
-          <div id="FileView1"></div>
-          <div id="FileView2"></div>
-          <div id="FileView3"></div>
-          <div id="FileView4"></div>
-          <div id="FileView5"></div>
+          <div id="SmallFileViewContainer">
+            <div id="FileView1"></div>
+            <div id="FileView2"></div>
+            <div id="FileView3"></div>
+            <div id="FileView4"></div>
+            <div id="FileView5"></div>
+          </div>
         </div>
       </div>
     </div>
