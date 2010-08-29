@@ -59,7 +59,7 @@ function handleUpload(request, response) {
             request.pause();
 
             response.writeHead(200, {'content-type': 'text/plain'});
-            response.end('{"type":"error", "content": "File is too big! It needs to be < '+PictShareFileSizeLimit+' byes."}');
+            response.end('{"type":"error", "content": "File is too big! It needs to be < '+PictShareFileSizeLimit+' byes."}\n\n');
         } else {
             var newBuffer = new Buffer(base64data.length+chunk.length);
             base64data.copy(newBuffer, 0, 0);

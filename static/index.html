@@ -49,8 +49,8 @@
       div#FileViewMain {
         margin-left: auto;
         margin-right: auto;
-        width: 380px;
-        height: 380px;
+        /*width: 380px;*/
+        /*height: 380px;*/
         border: 1px solid #000000;
         background-color: #fcfcfc;
       }
@@ -108,9 +108,9 @@
       $(document).ready(function() {
         setUpFileUpload();
         setUpWebsockets();
-        setUpLayout();
       
         showDialog();
+        setUpLayout();
       });
 
       function setUpFileUpload() {
@@ -134,14 +134,17 @@
             if((fileViewIndex >= 1) && (fileViewIndex <= 5)) {
               var mainData = $('#FileViewMain-Image').attr('src');
               $('#FileView'+fileViewIndex).empty();
-              $('#FileView'+fileViewIndex).append('<a id="FileView'+fileViewIndex+'-Fancy" href="#FileView'+fileViewIndex+'-Image-Original"><img width="'+fileViewSizeSmall+'" height="'+fileViewSizeSmall+'" src="'+mainData+'" /></a>');
+              $('#FileView'+fileViewIndex).append('<a id="FileView'+fileViewIndex+'-Fancy" href="#FileView'+fileViewIndex+'-Image-Original"><img id="FileView'+fileViewIndex+'-Image" style="display:none;" width="'+fileViewSizeSmall+'" height="'+fileViewSizeSmall+'" src="'+mainData+'" /></a>');
               $('#FileView'+fileViewIndex).append('<div style="display:none;"><img id="FileView'+fileViewIndex+'-Image-Original" src="'+mainData+'" /></div>');
               $('#FileView'+fileViewIndex+'-Fancy').fancybox();
+              $('#FileView'+fileViewIndex+'-Image').fadeIn('slow');
             }
             $('#FileViewMain').empty();
-            $('#FileViewMain').append('<a id="FileViewMain-Fancy" href="#FileViewMain-Image-Original"><img id="FileViewMain-Image" width="'+fileViewSizeMain+'" height="'+fileViewSizeMain+'" src="'+response.content+'" /></a>');
+            //$('#FileViewMain').append('<a id="FileViewMain-Fancy" href="#FileViewMain-Image-Original"><img id="FileViewMain-Image" style="display:none;" width="'+fileViewSizeMain+'" height="'+fileViewSizeMain+'" src="'+response.content+'" /></a>');
+            $('#FileViewMain').append('<a id="FileViewMain-Fancy" href="#FileViewMain-Image-Original"><img id="FileViewMain-Image" style="display:none;" width="'+fileViewSizeMain+'" height="'+fileViewSizeMain+'" src="'+response.content+'" /></a>');
             $('#FileViewMain').append('<div style="display:none;"><img id="FileViewMain-Image-Original" src="'+response.content+'" /></div>');
             $('#FileViewMain-Fancy').fancybox();
+            $('#FileViewMain-Image').fadeIn('slow');
             fileViewIndex += 1;
           } else if(response.type == 'users') {
             //alert('users: '+response.content);
@@ -151,6 +154,10 @@
       }
 
       function setUpLayout() {
+        fileViewSizeMain = $(document).height()-156-125;
+        $('#FileViewMain').css('width', fileViewSizeMain);
+        $('#FileViewMain').css('height', fileViewSizeMain);
+
         var layoutSettings = {
           Name: 'Main',
           Dock: $.layoutEngine.DOCK.FILL,
