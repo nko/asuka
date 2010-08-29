@@ -111,6 +111,8 @@
       
         showDialog();
         setUpLayout();
+
+        checkBrowser();
       });
 
       function setUpFileUpload() {
@@ -191,6 +193,23 @@
           $('#HowToDialog').hide();
         });
       }
+
+      function checkBrowser() {
+        //alert($.browser+', '+$.browser.version);
+        var isSupported = false;
+        if(($.browser.webkit) && ($.browser.version.substring(0, 1) == '5')) {
+          isSupported = true;
+        } else if(($.browser.mozilla) && ($.browser.version.substring(0, 1) == '2')) {
+          isSupported = true;
+        }
+
+        if(!isSupported) {
+          $('#WebBrowserDialog').fadeIn('slow');
+          $('#WebBrowserDialog').click(function() {
+            $('#WebBrowserDialog').hide();
+          });
+        }
+      }
     </script>
   </head>
   <body>
@@ -203,8 +222,11 @@
           <div>
             <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a>
           </div>
-          <div id="HowToDialog" style="display: none; position: fixed; top: 0px;  width: 100%; height: 50px; background-color: #e8e8e8; text-align: center; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; -moz-border-radius-bottomleft: 10px; -moz-border-radius-topright: 10px; font-weight: bold; -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50; font-size: 120%;">
-            Drag and drop image file to anywhere on this page!
+          <div id="HowToDialog" style="display: none; position: fixed; top: 0px;  width: 100%; background-color: #eaa93d; text-align: center; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; -moz-border-radius-bottomleft: 10px; -moz-border-radius-bottomright: 10px; font-weight: bold; -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50; font-size: 140%; padding: 10px;">
+            Drag and drop image file (&lt; 1MB!) to anywhere on this page!
+          </div>
+          <div id="WebBrowserDialog" style="display: none; position: fixed; top: 50px;  width: 100%; background-color: #eaa93d; text-align: center; font-weight: bold; -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50; font-size: 140%; padding: 10px;">
+            Your web browser may not work! Use Safari 5, Chrome 5, or Firefox 4 beta! 
           </div>
         </div>
         <div id="CenterContent">
