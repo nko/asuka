@@ -3,44 +3,29 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Asuka</title>
+    <link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script>
-    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script>
-    <script type="text/javascript" src="/libraries/dnd-file-upload/utils.js"></script>
+    <script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>
     <script>
-      $.fn.dropzone.newFilesDropped = function() {
-        alert('file dropped!');
-        // new files have been dropped
-      };
-
-      $.fn.dropzone.uploadStarted = function(fileIndex, file) {
-        alert('file uploading!');
-        // upload of file with given index has started
-      };
-
-      $.fn.dropzone.uploadFinished = function(fileIndex, file, time) {
-        // upload of file with given index has finished; upload took *time* mili seconds
-      };
-
-      $.fn.dropzone.fileUploadProgressUpdated = function(fileIndex, file, newProgress) {
-        // progress of given file has changed to *newProgress* percent
-      };
-      
-      $.fn.dropzone.fileUploadSpeedUpdated = function(fileIndex, file, KBperSecond) {
-        // upload speed of given file has changed to *KBPerSecond* KB/s
-      };
-
-      $(document).ready(function(){
-        $('#FileDragDrop').dropzone({
-          url: 'http://localhost:8080/upload'
+      $(document).ready(function() {
+        var uploader = new qq.FileUploader({
+          element: document.getElementById('FileDragDrop'),
+          action: '/upload',
+          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+          //sizeLimit: 0,
+          onSubmit: function(id, fileName) {
+            alert(fileName+' is uploading!');
+          },
+          onComplete: function(id, fileName, responseJSON) {
+            alert('done!');
+          }
         });
       });
     </script>
   </head>
   <body>
     <h1>Nanka</h1>
-    <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;">
-      Drop files here!
+    <div id="FileDragDrop">
     </div>
     <div id="FileView" style="width: 200px; height: 200px; border: thin solid black;">
       See files here!
