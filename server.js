@@ -31,7 +31,7 @@ var server = http.createServer(function(request, response) {
         break;
     }
 });
-server.listen(8080);
+server.listen(80);
 
 var listener = io.listen(server);
 listener.on('connection', function(client) {

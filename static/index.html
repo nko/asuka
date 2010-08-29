@@ -35,14 +35,14 @@
 
       function setUpFileUpload() {
         $('#FileDragDrop').dropzone({
-          url: 'http://192.168.2.11:8080/upload'
+          url: 'http://asuka.no.de/upload'
         });
       };
 
       function setUpWebsockets() {
         io.setPath('/websockets/');
       
-        var socket = new io.Socket('192.168.2.11', {port: 8080});
+        var socket = new io.Socket('asuka.no.de', {port: 80});
         socket.connect();
         socket.send('some data');
         socket.on('message', function(data) {
