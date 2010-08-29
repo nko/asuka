@@ -1,0 +1,134 @@
+*{
+	margin: 0px;
+	padding: 0px;
+
+}
+body {
+	background-color: #F5F5F5;
+	font-size: 95%;
+	line-height: 150%;
+	text-align: center;
+	color: #333333;
+	margin: 0px;
+}
+div#page {
+	text-align: left;
+	border: 1px solid #333333;
+	background: #FFFFFF;
+}
+div#head {
+	padding: 10px 10px 5px 5px;
+	margin: 0px;
+	background: #FFFFFF;
+}
+
+div#menu {
+	height: 1.5em;
+	padding: 0.25em 0px 0px;
+	background: #339966;
+	border-top: 1px solid #333333;
+	border-bottom: 1px solid #333333;
+}
+div#menu ul{
+	margin: 0px;
+	padding: 0px;
+}
+div#menu li{
+	float: left;
+	padding: 0px;
+	margin-left: 10px;
+	color: #FFFFFF;
+	list-style: none;
+}
+div#menu a{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+div#menu a:hover{
+	color: #FFFFFF;
+	background: #F0027F;
+}
+div#main {
+	margin: 0px;
+	border-left: 1px solid #CCCCCC;
+	padding: 20px 0px;
+	background: #FFFFFF;
+	width: 75%;
+	float: left;
+	border-right: 1px solid #CCCCCC;
+
+}
+div#main p {
+	margin: 0px 0px 20px 40px;
+}
+div#main ul {
+	margin-left: 60px;
+	margin-bottom: 1em;
+	margin-right: 30px;
+}
+div#submenu {
+	width: 20%;
+	margin: 5px 0px 0px 5px;
+	padding: 10px 0px;
+	float: left;
+}
+div#submenu ul{
+	margin: 0px 0px 0px 5px;
+	list-style: circle;
+	padding-left: 2em;
+}
+div#submenu p{
+	margin: 0px 10px 10px;
+}
+div#foot {
+	border-top: 1px solid #333333;
+	padding: 0px;
+	text-align: center;
+	clear: both;
+	margin: 0px;
+}
+div#foot p{
+	margin: 5px 0px;
+
+}
+strong {
+	color: #F0027F;
+}
+
+h1 {
+	font-size: 115%;
+	padding: 15px 15px 5px;
+	border-bottom: 1px solid #CCCCCC;
+	background: #F3F3F3;
+	font-weight: normal;
+}
+h2 {
+	font-size: 110%;
+	margin: 0px 20px 20px;
+	color: #333333;
+	border-bottom: 1px dashed #999999;
+	padding: 0px 0px 5px;
+	clear: both;
+}
+dl {
+	margin: 0px 0px 50px 40px;
+}
+dt {
+	font-weight: bold;
+}
+dd {
+	margin-bottom: 10px;
+}
+.imgbox {
+	margin: 0px 0px 1em 40px;
+}
+.imgbox img{
+	border: 1px solid #666666;
+}
+.imgbox_f {
+	margin: 0px 10px 1em;
+	float: left;
+}
+.imgbox_f img{
+	border: 1px solid #666666;
+}

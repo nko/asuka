@@ -1,0 +1,114 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<link href="/css/text.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+    <title>Asuka</title> 
+    <!--<link href="/libraries/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">--> 
+    <script type="text/javascript" src="/libraries/jquery/jquery-1.4.2.min.js"></script> 
+    <!--<script type="text/javascript" src="/libraries/file-uploader/client/fileuploader.js"></script>--> 
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.dnd-file-upload.js"></script> 
+    <script type="text/javascript" src="/libraries/dnd-file-upload/jquery.client.js"></script> 
+ 
+    <script type="text/javascript" src="/libraries/socketio/socket.io.js"></script> 
+    
+    <script> 
+      /*
+      $(document).ready(function() {
+        var uploader = new qq.FileUploader({
+          element: document.getElementById('FileDragDrop'),
+          action: '/upload',
+          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+          //sizeLimit: 0,
+          onSubmit: function(id, fileName) {
+            alert(fileName+' is uploading!');
+          },
+          onComplete: function(id, fileName, responseJSON) {
+            alert('done!');
+          }
+        });
+      });
+      */
+      $(document).ready(function() {
+        setUpFileUpload();
+        setUpWebsockets();
+      });
+ 
+      function setUpFileUpload() {
+        $('#FileDragDrop').dropzone({
+          url: 'http://asuka.no.de/upload'
+        });
+      };
+ 
+      function setUpWebsockets() {
+        io.setPath('/websockets/');
+      
+        var socket = new io.Socket('asuka.no.de', {port: 80});
+        socket.connect();
+        socket.send('some data');
+        socket.on('message', function(data) {
+          //alert(data);
+          $('#FileView').append('<img src="'+data+'" />');
+        });
+      };
+    </script> 
+  </head> 
+<body>
+<!-- #page -->
+<div id="page">
+
+<!-- #header -->
+<div id="head">
+	<img src="./img/pictshare_big.png" alt="log_img" width="415" height="145">
+</div>
+
+<!-- #menu --> 
+<div id="menu">
+	<ul>
+	<li><a href="#">HOME</a></li>
+	<li><a href="#">FAQ</a></li>
+	<li><a href="#">MORE</a></li>
+	</ul>
+</div>
+
+<h1><strong>Share Your Pictures Just By One Step!</strong></h1>
+
+<!-- #main left -->
+<div id="submenu">
+	<p>Drag-and-Drop Space</p>
+    <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;"> 
+      Drop File Here!
+    </div> 
+</div>
+
+
+<!-- #main right -->
+<div id="main">
+	<h2>Most Recently Shared</h2>
+	<div class="imgbox_f" id="FileView"> 
+	<img src="./img/pictshare_small.png" alt="recent_pic" width="176" height="156">
+	</div>
+</div>
+
+<!-- #foot -->
+<div id="foot">
+	<p>Copyright&copy;2010&nbsp;Asuka&nbsp;All&nbsp;rights&nbsp;reserved.</p>
+</div>
+
+</div>
+
+</body>
+<!--  <body> 
+    <h1>Nanka</h1> 
+    <div id="FileDragDrop" style="width: 200px; height: 200px; border: thin solid black;"> 
+      Drop File Here!
+    </div> 
+    <div id="FileView" style="width: 200px; height: 200px; border: thin solid black;"> 
+      See files here!
+    </div> 
+    <div> 
+      <a href="http://nodeknockout.com/teams/asuka" target="nko" title="Help me win Node.js KO!"><img style="position: fixed; top: 5px; right: 5px; border: 0px;" src="http://nodeknockout.com/images/voteko.png" alt="Help me win Node.js KO!" /></a> 
+    </div> 
+  </body> -->
+</html> 
